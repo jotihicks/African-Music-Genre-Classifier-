@@ -12,7 +12,7 @@ This repository contains the codebase for a deep learning project aimed at class
 **Classification Model:** A Jupyter Notebook containing the preprocessing logic, feature extraction (MFCCs/Spectrograms), and model training pipeline.
 
 **🎯 Target Genres**
-The model is currently trained to distinguish between the following classes:
+The model will be trained to distinguish between the following classes:
 
 Afrobeat
 
