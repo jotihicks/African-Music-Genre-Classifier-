@@ -1,10 +1,7 @@
 # African-Music-Genre-Classifier-
 An end-to-end pipeline for African music genre classification. Includes an automated agent for mass dataset acquisition and a Jupyter Notebook for model training and analysis.
 
-**African Music Genre Classifier 🌍🎵**
-An end-to-end machine learning pipeline for the acquisition and classification of African musical genres.
-
-**📖 Overview**
+## 📖 Overview
 This repository contains the codebase for a deep learning project aimed at classifying distinct African music genres (e.g., Afrobeat, Highlife, Amapiano, Soukous, Chimurenga). The project consists of two main modules:
 
 **Data Acquisition Agent:** An automated bot designed for mass downloading and organizing audio samples to construct a robust dataset.
@@ -34,26 +31,61 @@ Fuji
 
 Congolese Rumba
 
-**🤖 Module 1: Data Acquisition Agent**
+## 🤖 Module 1: Data Acquisition Agent
 
 The agent is built to construct the dataset automatically by scraping audio sources based on genre queries.
 
-**Key Features**
-Automated Extraction: Downloads audio from YouTube using yt-dlp.
+## Features
 
-**Standardization:** Converts all audio to WAV format (16-bit PCM, Mono) with a configurable sample rate (default: 22050Hz).
+- Downloads audio from YouTube using `yt-dlp`
+- Converts to WAV format (16-bit PCM, configurable sample rate)
+- Organizes by genre in separate folders
+- Logs metadata (filename, genre, URL, title, duration) to CSV
+- Robust error handling - continues on failures
+- Configurable number of results per query
 
-**Auto-Organization:** Sorts files into genre-specific subfolders.
+## Requirements
 
-**Metadata Logging:** Automatically generates a CSV tracking filename, genre label, source URL, video title, and duration.
+- Python 3.7+
+- ffmpeg (must be installed and in PATH)
+- yt-dlp
+- pandas
 
-**Resilience:** Robust error handling ensures the script continues even if individual downloads fail.
+## Installation
 
-**Output Structure**
-After running the agent, your data directory will look like this:
+1. Install ffmpeg:
+   - Windows: Download from https://ffmpeg.org/download.html
+   - Linux: `sudo apt install ffmpeg`
+   - Mac: `brew install ffmpeg`
 
-**Plaintext**
+2. Install Python dependencies:
+```bash
+pip install -r requirements.txt
+```
 
+## Usage
+
+1. Edit `search_queries.json` with your genres/search terms:
+```json
+[
+  "Afrobeats Nigeria",
+  "Highlife Ghana",
+  "Fuji music Nigeria"
+]
+```
+
+2. Run the downloader:
+```bash
+python download_agent.py
+```
+
+3. Configure settings in the script:
+   - `MAX_RESULTS_PER_QUERY`: Number of tracks per genre (default: 50)
+   - `SAMPLE_RATE`: Audio sample rate - 22050 or 44100 Hz (default: 22050)
+
+## Output Structure
+
+```
 african_music_dataset/
 ├── Afrobeats_Nigeria/
 │   ├── dQw4w9WgXcQ.wav
@@ -62,67 +94,20 @@ african_music_dataset/
 │   └── ...
 ├── metadata.csv
 └── error_log.txt
-Metadata Format (metadata.csv)
-**filename:** WAV file name (derived from YouTube ID to avoid special character issues).
+```
 
-**genre_label:** The specific search query used (e.g., "Highlife Ghana").
+## Metadata CSV
 
-**youtube_url:** Direct link to the source.
+Contains:
+- `filename`: WAV file name
+- `genre_label`: Genre/query label
+- `youtube_url`: Source URL
+- `title`: Video title
+- `duration`: Duration in seconds
 
-**title:** Original video title.
+## Notes
 
-**Duration:** Clip duration in seconds.
-
-**🚀 Getting Started**
-**1. Requirements**
-Python 3.7+
-
-ffmpeg (Critical: must be installed and in your system PATH)
-
-Python Libraries: yt-dlp, pandas
-
-**2. Installation**
-**Step A:** Install FFmpeg
-
-**Windows:** Download from ffmpeg.org and add to PATH.
-
-**Linux:** sudo apt install ffmpeg
-
-**Mac:** brew install ffmpeg
-
-**Step B:** Install Python Dependencies
-
-**Bash**
-
-pip install -r requirements.txt
-**3. Usage**
-**Step A:** Configure Search Queries Edit search_queries.json with your target genres or specific search terms:
-
-JSON
-
-[
-  "Afrobeats Nigeria",
-  "Highlife Ghana",
-  "Fuji music Nigeria",
-  "Amapiano South Africa"
-]
-**Step B:** Run the Downloader
-
-Bash
-
-python download_agent.py
-**Step C:** Configuration (Optional) You can adjust the following constants inside download_agent.py:
-
-**MAX_RESULTS_PER_QUERY:** Number of tracks to fetch per genre (default: 50).
-
-**SAMPLE_RATE:** Audio sample rate, e.g., 22050 or 44100 Hz (default: 22050).
-
-**📓 Module 2: Classifier**
-(Classification logic and notebook details to be added)
-
-⚠️ Notes
-Audio Format: Files are converted to mono to reduce dimensionality for the neural network.
-
-Error Logging: Any failed downloads are logged to error_log.txt rather than crashing the script.
-
-Suitability: The output WAV files are pre-processed specifically for ML/spectrogram analysis workflows.
+- Files are named by YouTube video ID to avoid special character issues
+- Audio is converted to mono, 16-bit PCM WAV
+- Script continues on errors and logs them to `error_log.txt`
+- Suitable for ML/spectrogram analysis workflows
