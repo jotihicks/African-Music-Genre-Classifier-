@@ -30,10 +30,6 @@ Fuji
 
 Congolese Rumba
 
-## 🤖 Module 1: Data Acquisition Agent
-
-The agent is built to construct the dataset automatically by scraping audio sources based on genre queries.
-
 ## Features
 
 - Downloads audio from YouTube using `yt-dlp`
