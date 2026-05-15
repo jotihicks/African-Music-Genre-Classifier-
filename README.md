@@ -1,4 +1,4 @@
-# African-Music-Genre-Classifier-
+# African-Music-Genre-Classifier(AFMGC)-
 An end-to-end pipeline for African music genre classification. Includes an automated agent for mass dataset acquisition and a Jupyter Notebook for model training and analysis.
 
 ## 📖 Overview
@@ -141,7 +141,7 @@ The classification pipeline is divided into four sequential Jupyter Notebooks. T
   * Naive Bayes & Decision Trees
 * **Results:** The **SVM** achieved the highest accuracy at **72.3%**. The notebook concludes by plotting a normalized Confusion Matrix to visualize the model's precision and recall across overlapping genres (like Afrobeat vs. Afrobeats).
 
-### 4. `CNN_AFMGC.ipynb` (Deep Learning Pipeline)
+### 4. `Convolutional Neural Networks on AFMGC` (Deep Learning Pipeline)
 **Goal:** Build and train a custom Convolutional Neural Network (CNN) to classify the spectrogram images.
 * **Data Loading:** Imports the `.png` spectrograms generated in Notebook 2 using TensorFlow/Keras utilities.
 * **Architecture:** Defines a deep learning model consisting of:
@@ -150,3 +150,58 @@ The classification pipeline is divided into four sequential Jupyter Notebooks. T
   * `Dropout` layers to prevent the model from over-fitting on the training data.
   * A `Flatten` layer leading into a fully-connected `Dense` network, ending with a 10-node softmax output for genre prediction.
 * **Training & Evaluation:** The model is compiled with the `Adam` optimizer and trained over 30 epochs. It achieves a robust **training accuracy of ~98.3%** and a **validation accuracy of ~89.6%**, proving that deep learning on spectrograms captures the nuances of African music genres significantly better than classical ML on numerical features.
+
+
+## 5. ⚠️ Known Limitations & Next Steps
+
+This project represents a foundational pipeline. The results reported above are honest *for the evaluation protocol used*, but several methodological choices warrant transparency — and they directly motivate the research direction I plan to pursue at the PhD level.
+
+### 1. Album/Artist Leakage in the Train/Test Split
+
+The current 80/20 split is random, which means tracks by the same artist likely appear in both training and test sets. This is a well-documented pitfall in music genre classification (Sturm, 2013; Flexer & Schnitzer, 2010), and it tends to inflate deep-learning performance more than classical-ML performance because CNNs can learn artist-specific timbral, vocal, and production cues rather than genre-level features.
+
+The 17-percentage-point gap between SVM (72.3%) and CNN (89.6%) is consistent with this phenomenon and almost certainly overstates the CNN's true generalisation to unseen artists.
+
+**Next step:** Re-evaluate with *artist-disjoint* and *album-disjoint* splits, and report the corrected numbers alongside the originals. I expect the CNN's honest validation accuracy to drop into the 70–80% range and the SVM–CNN gap to narrow substantially.
+
+### 2. Genre Label Validation
+
+Labels were derived from YouTube search queries (e.g. "Highlife Ghana", "Afrobeats Nigeria"). These queries are noisy: a search for "Afrobeats Nigeria" returns a mix of Afrobeats, Afrobeat, Highlife, and other adjacent genres, and uploader tagging on YouTube is not ethnomusicologically validated.
+
+The genuine ambiguity between certain genre pairs — Afrobeat vs Afrobeats, Highlife vs Afrobeats, Soukous vs Congolese Rumba — is itself musicologically meaningful, but it cannot be properly characterised without expert annotation.
+
+**Next step:** Collaborate with ethnomusicologists at the University of Lagos and partner institutions to validate a curated subset of the dataset, ideally with multi-annotator inter-rater agreement scores. This work is core to the broader data-sovereignty direction of the project.
+
+### 3. Dataset Size, Quality, and Provenance
+
+1,061 tracks is small by modern MIR standards — contemporary audio foundation models are trained on hundreds of thousands of hours. YouTube provenance also means variable audio quality across the dataset: different codecs, bitrates, and recording conditions per track.
+
+**Next step:** Expand the dataset through partnership with African music archives and through field recordings, addressing provenance and consent explicitly. Where direct expansion is constrained, leverage transfer learning from large pretrained audio models (CLAP, MERT, AST) rather than training CNNs from scratch — a more appropriate paradigm for low-resource musical traditions.
+
+### 4. Feature Choices Are Western-Music-Centric
+
+MFCCs and standard mel-spectrograms were originally developed for Western popular and classical music. African musical traditions involve characteristics — polyrhythmic structures, microtonality, non-12-TET tuning systems, characteristic ornamentation — that may not be optimally represented by these features.
+
+**Next step:** Explore rhythm-aware representations (longer-context onset detection, beat-synchronous features) and self-supervised pre-training on African music itself, so that learnt representations are shaped by the data rather than by inherited Western feature design.
+
+### 5. Evaluation Methodology
+
+The current report relies on a single train/test accuracy figure per model. A more rigorous protocol would include macro-F1 (given class imbalance), per-class precision and recall, k-fold cross-validation, and confidence intervals from repeated runs.
+
+**Next step:** Adopt the standard MIR evaluation protocol — k-fold CV, macro-F1, per-class metrics with confidence intervals, and appropriate statistical tests for model comparison.
+
+### 6. Ethical and Data Sovereignty Considerations
+
+The current dataset was scraped from YouTube without explicit artist consent, and the genre taxonomy was imposed externally rather than negotiated with the communities whose music is being classified. For a project framed around inclusion and representation, this is a contradiction that the project must eventually address.
+
+**Next step:** Move towards a collaboratively-curated dataset aligned with the CARE principles for indigenous data governance (Collective benefit, Authority to control, Responsibility, Ethics; Carroll et al., 2020), and engage with artists directly where possible.
+
+---
+
+These limitations are not afterthoughts — they form the agenda for the PhD research I am preparing to undertake. The current pipeline establishes that the problem is *technically tractable*; the next phase is to make it *methodologically rigorous and ethically grounded*.
+
+### References
+
+- Carroll, S. R., Garba, I., Figueroa-Rodríguez, O. L., Holbrook, J., Lovett, R., Materechera, S., et al. (2020). The CARE principles for indigenous data governance. *Data Science Journal*, 19(43), pp. 1–12.
+- Flexer, A. and Schnitzer, D. (2010). Effects of album and artist filters in audio similarity computed for very large music databases. *Computer Music Journal*, 34(3), pp. 20–28.
+- Sturm, B. L. (2013). The GTZAN dataset: its contents, its faults, their effects on evaluation, and its future use. *Journal of New Music Research*, 43(2), pp. 147–172.
